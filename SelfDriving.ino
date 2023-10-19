@@ -28,7 +28,13 @@ void setup()
 
 void loop()
 {
-    delay(SLEEP_PERIOD);
+    int awaitCommandDeliveryPeriodAfterBufferClearing = 10; //너무 짧을 경우 버퍼 초기화 후 새로운 명령이 전달되지 않을 가능성이 있음.(ms)
+    delay(SLEEP_PERIOD - awaitCommandDeliveryPeriodAfterBufferClearing);
+    
+    while (btSerial.available() > 0) //btSerial 버퍼를 모두 비움
+        btSerial.read();
+
+    delay(awaitCommandDeliveryPeriodAfterBufferClearing)
 
     if (btSerial.available())
     {
@@ -54,7 +60,4 @@ void loop()
             break;
         }
     }
-
-    while (btSerial.available() > 0) // btSerial 버퍼를 모두 비움
-        btSerial.read();
 }

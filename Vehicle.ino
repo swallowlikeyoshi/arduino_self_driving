@@ -1,9 +1,13 @@
 #include <SoftwareSerial.h>
 #define FORWARD true
 #define BACK false
-const int MOTOR_SPEED = 128;  // 모터의 속도를 결정함. -> 얼마나 빠르게 이동할 것인가?(0 ~ 255)
-const int ACTIVE_PERIOD = 50; // 이동할 시간을 결정함. -> 한번에 몇 초동안 이동할 것인가?(ms)
-const int SLEEP_PERIOD = 200; // loop의 지연시간을 결정함. -> 몇 초에 조종을 한번씩 할 것인가?(ms)
+
+//모터의 속도를 결정함. -> 얼마나 빠르게 이동할 것인가?(0 ~ 255)
+const int MOTOR_SPEED = 128; 
+//이동할 시간을 결정함. -> 한번에 몇 초동안 이동할 것인가?(ms)
+const int ACTIVE_PERIOD = 50; 
+//loop의 지연시간을 결정함. -> 몇 초에 한번씩 조종을 할 것인가?(ms)
+const int SLEEP_PERIOD = 200;
 
 class Motor
 {
