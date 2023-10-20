@@ -1,4 +1,3 @@
-#include <SoftwareSerial.h>
 #define FORWARD true
 #define BACK false
 
@@ -67,7 +66,7 @@ private:
         rightMotor.setDirection(rightDemandedDirection);
     }
 
-    void driveVehicle(bool leftDemandedDirection, bool rightDemandedDirection)
+    void driveMotor(bool leftDemandedDirection, bool rightDemandedDirection)
     {
         // 모터 속도를 0으로 만들기
         setMotorSpeed(0, 0);
@@ -92,18 +91,18 @@ public:
     void moveForward(void)
     {
         Serial.print("Moving Forward... ");
-        driveVehicle(FORWARD, FORWARD);
+        driveMotor(FORWARD, FORWARD);
     }
 
     void moveLeft(void)
     {
         Serial.print("Moving Left... ");
-        driveVehicle(BACK, FORWARD);
+        driveMotor(BACK, FORWARD);
     }
 
     void moveRight(void)
     {
         Serial.print("Moving Right... ");
-        driveVehicle(FORWARD, BACK);
+        driveMotor(FORWARD, BACK);
     }
 };
