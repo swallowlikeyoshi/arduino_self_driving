@@ -12,7 +12,7 @@
 const int MOTOR_PINS[] = {IN1, IN2, IN3, IN4, ENA, ENB};
 
 SoftwareSerial *btSerial;
-Car *vehicle;
+ContinuousCar *vehicle;
 
 void setup()
 {
@@ -20,7 +20,8 @@ void setup()
         pinMode(p, OUTPUT);
 
     btSerial = new SoftwareSerial(BT_RXD, BT_TXD);
-    vehicle = new Car(IN1, IN2, IN3, IN4, ENA, ENB);
+    vehicle = new ContinuousCar(IN1, IN2, IN3, IN4, ENA, ENB);
+    vehicle->moveStart();
 
     Serial.begin(9600);
     btSerial.begin(9600);
@@ -39,10 +40,6 @@ void loop()
     if (btSerial.available())
     {
         int direction = btSerial.read();
-
-        Serial.print("Command: '");
-        Serial.write(direction);
-        Serial.print("'. ");
 
         switch (direction)
         {

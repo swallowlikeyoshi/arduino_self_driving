@@ -1,3 +1,4 @@
+#include <pair>
 #define FORWARD true
 #define BACK false
 
@@ -29,49 +30,54 @@ public:
         return;
     }
 
-    void setDirection(bool demandedDirection) // true: 전진, false: 후진
+    void setDirection(bool Direction) // true: 전진, false: 후진
     {
-        this->motorDirection = demandedDirection;
-        digitalWrite(motorPin1, demandedDirection == FORWARD ? HIGH : LOW);
-        digitalWrite(motorPin2, demandedDirection == FORWARD ? LOW : HIGH);
+        this->motorDirection = Direction;
+        digitalWrite(motorPin1, Direction == FORWARD ? HIGH : LOW);
+        digitalWrite(motorPin2, Direction == FORWARD ? LOW : HIGH);
         return;
     }
 
-    void setSpeed(int demandedSpeed) // sp: 0 ~ 255
+    void setSpeed(int speed) // sp: 0 ~ 255
     {
-        if (sp >= 0 && sp <= 255)
+        if (speed >= 0 && speed <= 255)
         {
-            motorSpeed = demandedSpeed;
+            motorSpeed = speed;
             analogWrite(motorSpeedControlPin, motorSpeed);
         }
         return;
+    }
+
+    void getSpeed(void)
+    {
+        return motorSpeed;
     }
 };
 
 class Car
 {
-private:
+protected:
     Motor leftMotor;
     Motor rightMotor;
 
-    void setMotorSpeed(int leftDemandedSpeed, int rightDemandedSpeed)
+    void setMotorSpeed(int leftSpeed, int rightSpeed)
     {
-        leftMotor.setSpeed(leftDemandedSpeed);
-        rightMotor.setSpeed(rightDemandedSpeed);
+        leftMotor.setSpeed(leftSpeed);
+        rightMotor.setSpeed(rightSpeed);
     }
 
-    void setMotorDirection(bool leftDemandedDirection, bool rightDemandedDirection)
+    void setMotorDirection(bool leftDirection, bool rightDirection)
     {
-        leftMotor.setDirection(leftDemandedDirection);
-        rightMotor.setDirection(rightDemandedDirection);
+        leftMotor.setDirection(leftDirection);
+        rightMotor.setDirection(rightDirection);
     }
 
-    void driveMotor(bool leftDemandedDirection, bool rightDemandedDirection)
+    void driveMotor(bool leftDirection, bool rightDirection)
     {
         // 모터 속도를 0으로 만들기
         setMotorSpeed(0, 0);
         // 모터 방향을 설정하기
-        setMotorDirection(leftDemandedDirection, rightDemandedDirection);
+        setMotorDirection(leftDirection, rightDirection);
         // 모터를 가동하기
         setMotorSpeed(MOTOR_SPEED, MOTOR_SPEED);
         // 가동 시간 지연
@@ -82,7 +88,7 @@ private:
     }
 
 public:
-    CAR(int i1, int i2, int i3, int i4, int leftMotorSpeed, int rightMotorSpeed)
+    Car(int i1, int i2, int i3, int i4, int leftMotorSpeed, int rightMotorSpeed)
     {
         leftMotor.setter(i1, i2, leftMotorSpeed);
         rightMotor.setter(i3, i4, rightMotorSpeed);
@@ -90,19 +96,52 @@ public:
 
     void moveForward(void)
     {
-        Serial.print("Moving Forward... ");
         driveMotor(FORWARD, FORWARD);
     }
 
     void moveLeft(void)
     {
-        Serial.print("Moving Left... ");
         driveMotor(BACK, FORWARD);
     }
 
     void moveRight(void)
     {
-        Serial.print("Moving Right... ");
         driveMotor(FORWARD, BACK);
+    }
+
+    pair<unsigned int, unsigned int> getMotorSpeed(void)
+    {
+        return make_pair(leftMotor.getSpeed(), rightMotor.getSpeed());
+    }
+};
+
+class ContinuousCar : private Car 
+{
+    ContinuousCar(int m1, int m2, int m3, int m4, int leftMotorSpeed, int rightMotorSpeed) : Car(m1, m2, m3, m4, leftMotorSpeed, rightMotorSpeed)
+    {
+            
+    }
+
+    void moveStart(void)
+    {
+        setMotorDirection(FORWARD, FORWARD);
+        setMotorSpeed(MOTOR_SPEED, MOTOR_SPEED);
+    }
+
+    void stop(void)
+    {
+        setMotorSpeed(0, 0);
+    }
+
+    void moveLeft(void)
+    {
+        pair<unsigned int, unsigned int> motorSpeed = getMotorSpeed();
+        setMotorSpeed(motorSpeed.fisrt + 10, motorSpeed.second - 10);
+    }
+
+    void moveRight(void)
+    {
+        pair<unsigned int, unsigned int> motorSpeed = getMotorSpeed();
+        setMotorSpeed(motorSpeed.fisrt - 10, motorSpeed.second + 10);
     }
 };
