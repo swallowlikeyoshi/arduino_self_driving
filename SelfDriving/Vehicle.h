@@ -1,4 +1,3 @@
-#include <pair>
 #define FORWARD true
 #define BACK false
 
@@ -8,6 +7,8 @@ const int MOTOR_SPEED = 128;
 const int ACTIVE_PERIOD = 50; 
 //loop의 지연시간을 결정함. -> 몇 초에 한번씩 조종을 할 것인가?(ms)
 const int SLEEP_PERIOD = 200;
+//연속 운전시 양측 바퀴 편향값
+const int DIFF_SPEED = DIFF_SPEED;
 
 class Motor
 {
@@ -48,7 +49,7 @@ public:
         return;
     }
 
-    void getSpeed(void)
+    int getSpeed(void)
     {
         return motorSpeed;
     }
@@ -109,9 +110,10 @@ public:
         driveMotor(FORWARD, BACK);
     }
 
-    pair<unsigned int, unsigned int> getMotorSpeed(void)
+    int* getMotorSpeed(void)
     {
-        return make_pair(leftMotor.getSpeed(), rightMotor.getSpeed());
+        int motorSpeed[2] = { leftMotor.getSpeed(), rightMotor.getSpeed() };
+        return motorSpeed;
     }
 };
 
@@ -119,7 +121,7 @@ class ContinuousCar : private Car
 {
     ContinuousCar(int m1, int m2, int m3, int m4, int leftMotorSpeed, int rightMotorSpeed) : Car(m1, m2, m3, m4, leftMotorSpeed, rightMotorSpeed)
     {
-            
+        return;
     }
 
     void moveStart(void)
@@ -135,13 +137,13 @@ class ContinuousCar : private Car
 
     void moveLeft(void)
     {
-        pair<unsigned int, unsigned int> motorSpeed = getMotorSpeed();
-        setMotorSpeed(motorSpeed.fisrt + 10, motorSpeed.second - 10);
+        int* motorSpeed = getMotorSpeed();
+        setMotorSpeed(motorSpeed[0] + DIFF_SPEED, motorSpeed[1] - DIFF_SPEED);
     }
 
     void moveRight(void)
     {
-        pair<unsigned int, unsigned int> motorSpeed = getMotorSpeed();
-        setMotorSpeed(motorSpeed.fisrt - 10, motorSpeed.second + 10);
+        int* motorSpeed = getMotorSpeed();
+        setMotorSpeed(motorSpeed[0] - DIFF_SPEED, motorSpeed[1] + DIFF_SPEED);
     }
 };
