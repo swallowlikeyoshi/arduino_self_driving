@@ -138,12 +138,12 @@ class ContinuousCar : private Car
     void moveLeft(void)
     {
         int* motorSpeed = getMotorSpeed();
-        setMotorSpeed(motorSpeed[0] + DIFF_SPEED, motorSpeed[1] - DIFF_SPEED);
+        setMotorSpeed(motorSpeed[0] - DIFF_SPEED, motorSpeed[1] + DIFF_SPEED);
     }
 
     void moveRight(void)
     {
         int* motorSpeed = getMotorSpeed();
-        setMotorSpeed(motorSpeed[0] - DIFF_SPEED, motorSpeed[1] + DIFF_SPEED);
+        setMotorSpeed(motorSpeed[0] + DIFF_SPEED, motorSpeed[1] - DIFF_SPEED);
     }
 };
